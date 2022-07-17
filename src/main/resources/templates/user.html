@@ -19,6 +19,18 @@
         <input type="text" th:field="*{name}" id="name" th:value="${user.name}">
         <br>
         <br>
+        <label for="lastName">User last name</label>
+        <input type="text" th:field="*{lastName}" id="lastName" th:value="${user.lastName}">
+        <br>
+        <br>
+        <label for="email">User email</label>
+        <input type="text" th:field="*{email}" id="email" th:value="${user.email}">
+        <br>
+        <br>
+        <label for="age">User age</label>
+        <input type="text" th:field="*{age}" id="age" th:value="${user.age}">
+        <br>
+        <br>
         <label for="roles">User role</label>
         <input type="text" th:field="*{roles}" id="roles" th:value="${user.roles}">
         <br>
@@ -27,10 +39,13 @@
 
 <br>
 <br>
-<form th:action="@{/logout}">
-    <div>
-        <button type="submit">Logout</button>
-    </div>
+<form th:action="@{/logout}"
+      method="post">
+    <input type="submit"
+           value="Log out" />
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}"/>
 </form>
 </body>
 </html>

@@ -23,13 +23,24 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "first_name", unique = true)
     @NotEmpty(message = "Name should not be empty")
     @Size(min = 2, max = 40, message = "Name should be between 2 and 40 characters")
-    private String name;
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @Column(name = "age")
+    private int age;
 
     @Column(name = "password")
     private String password;
+
+
 
     @ManyToMany
     @JoinTable(name = "users_roles",
@@ -48,7 +59,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return this.getEmail();
     }
 
     @Override
@@ -76,11 +87,11 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(name, user.name);
+        return id == user.id && Objects.equals(firstName, user.firstName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(firstName);
     }
 }

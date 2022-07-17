@@ -13,13 +13,19 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+
+    private final Logger LOGGER = Logger.getLogger("ru.kata.spring.boot_security.demo.service.UserServiceImpl");
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, @Lazy PasswordEncoder passwordEncoder) {
@@ -43,16 +49,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public User findByName(String username) {
-        return userRepository.findByName(username).orElse(null);
+        return userRepository.findByFirstName(username).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
     @Transactional
     public User saveUser(User user) {
 
-        if (userRepository.findByName(user.getName()).isPresent()) {
-            User user1 = userRepository.findByName(user.getName()).get();
-            user1.setName(user.getName());
+        if (userRepository.findByFirstName(user.getFirstName()).isPresent()) {
+            User user1 = userRepository.findByFirstName(user.getFirstName()).get();
+            user1.setFirstName(user.getFirstName());
             user1.setPassword(user.getPassword());
             user1.setRoles(user.getRoles());
 
@@ -72,18 +84,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = findByEmail(email);
 
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+            throw new UsernameNotFoundException(String.format("User '%s' not found", email));
         }
+
+        LOGGER.setLevel(Level.WARNING);
+        LOGGER.log(Level.WARNING, user.getEmail() + "_____________" + user.getFirstName());
 
         return user;
     }
 
     @Transactional(readOnly = true)
     public List<Role> roleList() {
-        return roleRepository.findAll();
+        List<Role> roleList = new ArrayList<>() {
+            @Override
+            public String toString() {
+                Iterator<Role> it = iterator();
+                if (! it.hasNext())
+                    return "[]";
+
+                StringBuilder sb = new StringBuilder();
+                //sb.append('[');
+                for (;;) {
+                    Role e = it.next();
+                    sb.append(e.toString().replace("ROLE_", ""));
+                    if (! it.hasNext())
+                        return sb.toString();
+                    sb.append(' ').append(' ');
+                }
+                //return super.toString();
+            }
+        };
+        roleList.addAll(roleRepository.findAll());
+        return roleList;
     }
 }

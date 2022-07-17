@@ -15,9 +15,24 @@
 <br>
 <form th:action="@{/com/admin/save}" th:object="${user}" method="post">
   <div>
-    <label for="name">User name</label>
-    <input type="text" th:field="*{name}" id="name" th:value="${user.name}">
-    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <label for="firstName">User name</label>
+    <input type="text" th:field="*{firstName}" id="firstName" th:value="${user.firstName}">
+    <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+    <br>
+    <br>
+    <label for="lastName">User last name</label>
+    <input type="text" th:field="*{lastName}" id="lastName" th:value="${user.lastName}">
+    <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+    <br>
+    <br>
+    <label for="email">User email</label>
+    <input type="text" th:field="*{email}" id="email" th:value="${user.email}">
+    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br>
+    <br>
+    <label for="age">User age</label>
+    <input type="text" th:field="*{age}" id="age" th:value="${user.age}">
+    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
     <br>
     <br>
     <label for="password">User Password</label>
@@ -39,10 +54,13 @@
 </form>
 <br>
 <br>
-<form th:action="@{/logout}">
-  <div>
-    <button type="submit">Logout</button>
-  </div>
+<form th:action="@{/logout}"
+      method="post">
+  <input type="submit"
+         value="Log out" />
+  <input type="hidden"
+         name="${_csrf.parameterName}"
+         value="${_csrf.token}"/>
 </form>
 </body>
 </html>
