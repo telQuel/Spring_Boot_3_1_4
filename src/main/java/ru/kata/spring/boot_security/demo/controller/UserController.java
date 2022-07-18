@@ -38,7 +38,8 @@ public class UserController {
     @GetMapping("/admin/allUsers")
     public String getUsers(Model model, Principal principal) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", userService.roleList());
+        model.addAttribute("autUser", userService.findByEmail(principal.getName()));
+        model.addAttribute("roleList", userService.roleList());
         model.addAttribute("adminEmail", principal.getName());
         model.addAttribute("users", userService.findAll());
         return "users";
