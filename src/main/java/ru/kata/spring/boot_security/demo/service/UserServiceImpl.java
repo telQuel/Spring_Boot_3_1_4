@@ -65,6 +65,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByFirstName(user.getFirstName()).isPresent()) {
             User user1 = userRepository.findByFirstName(user.getFirstName()).get();
             user1.setFirstName(user.getFirstName());
+            user1.setLastName(user.getLastName());
+            user1.setEmail(user.getEmail());
+            user1.setAge(user.getAge());
             user1.setPassword(user.getPassword());
             user1.setRoles(user.getRoles());
 

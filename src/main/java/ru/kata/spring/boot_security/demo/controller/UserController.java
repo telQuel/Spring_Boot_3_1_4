@@ -24,6 +24,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/index2")
+    public String index2() {
+        return "index2";
+    }
+
     @GetMapping("/admin")
     public String adminPage(Principal principal) {
         return "admin-page";

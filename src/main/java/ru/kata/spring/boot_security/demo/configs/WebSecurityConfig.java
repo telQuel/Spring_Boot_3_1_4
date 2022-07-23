@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 @EnableWebSecurity
@@ -30,8 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/index").hasAnyAuthority()
                 .antMatchers("/com/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasAnyAuthority()
-                .anyRequest().authenticated()
+                .antMatchers("/rest/new/**").hasRole("ADMIN")
+                .antMatchers("/rest/").permitAll()
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/login")
@@ -42,30 +43,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .permitAll();
+                .permitAll()
+                .and()
+                .csrf().disable();
     }
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/css/**");
+        webSecurity.ignoring().antMatchers("/css/**", "/com/index2", "/js/**");
     }
-
-//    @Bean
-//    public UserDetailsService users() {
-//        UserDetails user = User.builder()
-//                .username("user")
-//                //.password("abc")
-//                .password("{bcrypt}$2a$12$MxYoJf8Nv7iq0WNJiy74f.RmVZ06yUumOMgCy8MgvDip549YA0Sw2")
-//                .roles("USER")
-//                .build();
-//
-//        UserDetails admin = User.builder()
-//                .username("admin")
-//                .password("{bcrypt}$2a$12$MxYoJf8Nv7iq0WNJiy74f.RmVZ06yUumOMgCy8MgvDip549YA0Sw2")
-//                .roles("ADMIN")
-//                .build();
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

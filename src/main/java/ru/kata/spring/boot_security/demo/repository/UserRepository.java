@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @EntityGraph(attributePaths = {"roles"})
     Optional<User> findById(int id);
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"roles"})
+    @EntityGraph(attributePaths = {"roles"})
     Optional<User> findByFirstName(String firstName);
 
     @EntityGraph(attributePaths = {"roles"})
