@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/index").hasAnyAuthority()
                 .antMatchers("/com/admin/**").hasRole("ADMIN")
-                .antMatchers("/rest/new/**").hasRole("ADMIN")
+                .antMatchers("/rest/addNewUser", "/rest/updateUser", "/rest/deleteUser/**").hasRole("ADMIN")
                 .antMatchers("/rest/").permitAll()
                 .and()
                 .formLogin()
@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/css/**", "/com/index2", "/js/**");
+        webSecurity.ignoring().antMatchers("/css/**", "/js/**");
     }
 
     @Bean

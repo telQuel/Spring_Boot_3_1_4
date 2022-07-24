@@ -16,7 +16,7 @@
 <form th:action="@{/user/save}" th:object="${user}" method="post">
     <div>
         <label for="name">User name</label>
-        <input type="text" th:field="*{name}" id="name" th:value="${user.name}">
+        <input type="text" th:field="*{firstName}" id="name" th:value="${user.firstName}">
         <br>
         <br>
         <label for="lastName">User last name</label>

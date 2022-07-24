@@ -1,15 +1,14 @@
-const urlAll = "http://localhost:8080/rest/"
+const url = "http://localhost:8080/rest/"
+const urlAddNewUser = "http://localhost:8080/rest/addNewUser"
+const urlUpdateUser = "http://localhost:8080/rest/updateUser"
 const tableAllUsers = document.querySelector('#allUsers')
 
 async function loadUsersAllTable(url, table) {
-
     const tableBody = table.querySelector("tbody");
     const response = await fetch(url);
-
     const rows = await response.json();
-
-    //console.log(rows);
     const keys = ["id", "firstName", "lastName", "age", "email", "roles", "Edit", "Delete"];
+
     tableBody.innerHTML = "<tr></tr>";
     table.className = "table table-striped";
 
@@ -114,11 +113,11 @@ async function loadUsersAllTable(url, table) {
 }
 
 
-loadUsersAllTable(urlAll, table1)
-setInterval(() => loadUsersAllTable(urlAll, table1), 5000)
+loadUsersAllTable(url, tableAllUsers)
+setInterval(() => loadUsersAllTable(url, tableAllUsers), 5000)
 
 
-// Edit
+// Edit User
 const editButton = document.querySelector('#editButton')
 
 editButton.addEventListener('click', (event) => {
@@ -157,10 +156,11 @@ editButton.addEventListener('click', (event) => {
         password: editPassword.value,
         roles: arrayRoles
     })
-    fetch(url, {
+    fetch(urlUpdateUser, {
         method: 'PUT', headers: {'Content-Type': 'application/json'}, body: json
     }).then()
         .catch(e => console.log(e))
+    loadUsersAllTable(url, tableAllUsers)
 })
 
 //Delete By Id
@@ -171,11 +171,76 @@ deleteButton.addEventListener('click', (event) => {
     const deleteModal = document.querySelector('#deleteModal')
     console.log('submit_del')
     const deleteId = deleteModal.querySelector('#Id_delete')
-    fetch(url + `delete/${deleteId.value}`, {
+    fetch(url + `deleteUser/${deleteId.value}`, {
         method: 'DELETE'
     }).then()
         .catch(e => console.log(e))
+    loadUsersAllTable(url, tableAllUsers)
 })
 
 
-loadUsersAllTable(urlAll, tableAllUsers)
+loadUsersAllTable(url, tableAllUsers)
+
+//Add new user
+const addUserButton = document.querySelector('#addNewUser')
+
+addUserButton.addEventListener('click', (event) => {
+    event.preventDefault()
+    const formAdd = document.querySelector('#formAdd')
+    const newName = formAdd.querySelector('#firstName_new')
+    const newSurname = formAdd.querySelector('#lastName_new')
+    const newAge = formAdd.querySelector('#age_new')
+    const newEmail = formAdd.querySelector('#email_new')
+    const newPassword = formAdd.querySelector('#password_new')
+    const newRole = formAdd.querySelector('#role_new')
+    let arrayRoles = []
+
+    if (newRole[0].selected) {
+        let id = 2
+        id = newRole[0].value === 'ROLE_ADMIN' ? id = 2 : id = 1
+        let role = {id, name: newRole[0].value}
+        arrayRoles.push(role)
+    }
+    if (newRole[1].selected) {
+        let id = 1
+        id = newRole[1].value === 'ROLE_USER' ? id = 1 : id = 2
+        let role = {id, name: newRole[1].value}
+        arrayRoles.push(role)
+    }
+
+    const json = JSON.stringify({
+        firstName: newName.value,
+        lastName: newSurname.value,
+        age: newAge.value,
+        email: newEmail.value,
+        password: newPassword.value,
+        roles: arrayRoles
+    })
+
+    let hasErrorEmpty = false
+    let objectJSON = JSON.parse(json)
+
+    for (const jsonElement in objectJSON) {
+        if (objectJSON[jsonElement] === "") {
+            window.alert(jsonElement + " cannot be empty!")
+            hasErrorEmpty = true
+            break;
+        }
+    }
+
+    if (!hasErrorEmpty) {
+        console.log(json);
+        fetch(urlAddNewUser, {
+            credentials: 'include',
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: json
+        }).then()
+            .catch(e => console.log(e))
+        window.alert("User added")
+    }
+    loadUsersAllTable(url, tableAllUsers)
+    newName.value = ""
+    newSurname.value = ""
+    newAge.value = ""
+    newEmail.value = ""
+    newPassword.value = ""
+})

@@ -8,8 +8,6 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @RestController
 //@CrossOrigin
@@ -39,19 +37,19 @@ public class UserRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/")
+    @PutMapping("/updateUser")
     public User editUser(@RequestBody User user) {
         userService.saveUser(user);
         return user;
     }
 
-    @PostMapping("/")
+    @PostMapping("/addNewUser")
     public User addNewUser(@RequestBody User user) {
         userService.saveUser(user);
         return user;
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/deleteUser/{id}")
     public void deleteUserById(@PathVariable int id) {
         userService.deleteById(id);
     }
