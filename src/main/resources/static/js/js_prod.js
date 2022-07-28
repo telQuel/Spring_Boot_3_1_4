@@ -1,12 +1,10 @@
-const url = "http://localhost:8080/rest/"
-const urlAddNewUser = "http://localhost:8080/rest/addNewUser"
-const urlUpdateUser = "http://localhost:8080/rest/updateUser"
+const URL = "http://localhost:8080/rest/"
 const tableAllUsers = document.querySelector('#allUsers')
 
 async function loadUsersAllTable(url, table) {
-    const tableBody = table.querySelector("tbody");
-    const response = await fetch(url);
-    const rows = await response.json();
+    let tableBody = table.querySelector("tbody");
+    let response = await fetch(url);
+    let rows = await response.json();
     const keys = ["id", "firstName", "lastName", "age", "email", "roles", "Edit", "Delete"];
 
     tableBody.innerHTML = "<tr></tr>";
@@ -25,7 +23,6 @@ async function loadUsersAllTable(url, table) {
                 continue;
             }
             if (key === "Edit") {
-                //const openModal = document.createElement("a")
                 const button = document.createElement("button")
                 button.className = "btn btn-info"
                 button.id = 'editButton'
@@ -33,10 +30,9 @@ async function loadUsersAllTable(url, table) {
                 button.textContent = "Edit"
                 button.setAttribute("data-bs-target", "#exampleModal3")
                 button.setAttribute('data-bs-toggle', 'modal')
-                button.setAttribute('user_id', row.id)
                 button.addEventListener('click', () => {
                     let editModal = document.getElementById('editModal')
-                    const modalEdit = new bootstrap.Modal(editModal)
+                    let modalEdit = new bootstrap.Modal(editModal)
                     let modalBody = editModal.getElementsByClassName('modal-body')[0].children[0].children
 
                     modalBody[0].children[1].value = row.id
@@ -71,14 +67,8 @@ async function loadUsersAllTable(url, table) {
                 button.textContent = "Delete"
                 button.addEventListener('click', () => {
                     let modalDelete = document.getElementById('deleteModal')
-
                     let modalBody = modalDelete.getElementsByClassName('modal-body')[0].children[0].children
-                    console.log(modalBody)
-                    console.log(modalBody[1])
-                    console.log(modalBody[6].children[1])
-
-                    const modalDel = new bootstrap.Modal(modalDelete)
-                    const idDelete = document.querySelector('#Id_delete')
+                    let modalDel = new bootstrap.Modal(modalDelete)
 
                     modalBody[0].children[1].value = row.id
                     modalBody[1].children[1].value = row.firstName
@@ -113,8 +103,8 @@ async function loadUsersAllTable(url, table) {
 }
 
 
-loadUsersAllTable(url, tableAllUsers)
-setInterval(() => loadUsersAllTable(url, tableAllUsers), 5000)
+loadUsersAllTable(URL, tableAllUsers)
+setInterval(() => loadUsersAllTable(URL, tableAllUsers), 5000)
 
 
 // Edit User
@@ -122,16 +112,8 @@ const editButton = document.querySelector('#editButton')
 
 editButton.addEventListener('click', (event) => {
     event.preventDefault()
-    const editModal = document.querySelector('#editModal')
-    console.log('submit')
-    const editId = editModal.querySelector('#Id_edit')
-    console.log(editId.value)
-    const editName = editModal.querySelector('#First_name_edit')
-    const editSurname = editModal.querySelector('#LastName_edit')
-    const editAge = editModal.querySelector('#Age_edit')
-    const editEmail = editModal.querySelector('#Email_edit')
-    const editPassword = editModal.querySelector('#Password_edit')
-    const editRole = editModal.querySelector('#role_edit')
+    let editModal = document.querySelector('#editModal')
+    let editRole = editModal.querySelector('#role_edit')
     let arrayRoles = []
 
     if (editRole.length > 0) {
@@ -145,22 +127,24 @@ editButton.addEventListener('click', (event) => {
         }
     }
 
-    console.log(editRole[0].selected)
-    console.log(arrayRoles)
     const json = JSON.stringify({
-        id: editId.value,
-        firstName: editName.value,
-        lastName: editSurname.value,
-        age: editAge.value,
-        email: editEmail.value,
-        password: editPassword.value,
+        id: editModal.querySelector('#Id_edit').value,
+        firstName: editModal.querySelector('#First_name_edit').value,
+        lastName: editModal.querySelector('#LastName_edit').value,
+        age: editModal.querySelector('#Age_edit').value,
+        email: editModal.querySelector('#Email_edit').value,
+        password: editModal.querySelector('#Password_edit').value,
         roles: arrayRoles
     })
-    fetch(urlUpdateUser, {
+    fetch(URL + 'updateUser', {
         method: 'PUT', headers: {'Content-Type': 'application/json'}, body: json
     }).then()
         .catch(e => console.log(e))
-    loadUsersAllTable(url, tableAllUsers)
+
+    loadUsersAllTable(URL, tableAllUsers)
+
+    let modalEdit = bootstrap.Modal.getInstance(editModal)
+    modalEdit.hide()
 })
 
 //Delete By Id
@@ -168,31 +152,35 @@ const deleteButton = document.querySelector('#deleteButton')
 
 deleteButton.addEventListener('click', (event) => {
     event.preventDefault()
-    const deleteModal = document.querySelector('#deleteModal')
-    console.log('submit_del')
-    const deleteId = deleteModal.querySelector('#Id_delete')
-    fetch(url + `deleteUser/${deleteId.value}`, {
+
+    let deleteModal = document.querySelector('#deleteModal')
+    let deleteId = deleteModal.querySelector('#Id_delete')
+
+    fetch(URL + `deleteUser/${deleteId.value}`, {
         method: 'DELETE'
     }).then()
         .catch(e => console.log(e))
-    loadUsersAllTable(url, tableAllUsers)
+
+    let modalDelete = bootstrap.Modal.getInstance(deleteModal)
+    modalDelete.hide()
+    loadUsersAllTable(URL, tableAllUsers)
 })
 
 
-loadUsersAllTable(url, tableAllUsers)
+loadUsersAllTable(URL, tableAllUsers)
 
 //Add new user
 const addUserButton = document.querySelector('#addNewUser')
 
 addUserButton.addEventListener('click', (event) => {
     event.preventDefault()
-    const formAdd = document.querySelector('#formAdd')
-    const newName = formAdd.querySelector('#firstName_new')
-    const newSurname = formAdd.querySelector('#lastName_new')
-    const newAge = formAdd.querySelector('#age_new')
-    const newEmail = formAdd.querySelector('#email_new')
-    const newPassword = formAdd.querySelector('#password_new')
-    const newRole = formAdd.querySelector('#role_new')
+    let formAdd = document.querySelector('#formAdd')
+    let newName = formAdd.querySelector('#firstName_new')
+    let newSurname = formAdd.querySelector('#lastName_new')
+    let newAge = formAdd.querySelector('#age_new')
+    let newEmail = formAdd.querySelector('#email_new')
+    let newPassword = formAdd.querySelector('#password_new')
+    let newRole = formAdd.querySelector('#role_new')
     let arrayRoles = []
 
     if (newRole[0].selected) {
@@ -208,7 +196,7 @@ addUserButton.addEventListener('click', (event) => {
         arrayRoles.push(role)
     }
 
-    const json = JSON.stringify({
+    let json = JSON.stringify({
         firstName: newName.value,
         lastName: newSurname.value,
         age: newAge.value,
@@ -229,15 +217,14 @@ addUserButton.addEventListener('click', (event) => {
     }
 
     if (!hasErrorEmpty) {
-        console.log(json);
-        fetch(urlAddNewUser, {
+        fetch(URL + 'addNewUser', {
             credentials: 'include',
             method: 'POST', headers: {'Content-Type': 'application/json'}, body: json
         }).then()
             .catch(e => console.log(e))
         window.alert("User added")
     }
-    loadUsersAllTable(url, tableAllUsers)
+    loadUsersAllTable(URL, tableAllUsers)
     newName.value = ""
     newSurname.value = ""
     newAge.value = ""
