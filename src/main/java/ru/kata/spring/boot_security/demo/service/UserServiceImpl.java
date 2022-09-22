@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public User saveUser(User user) {
 
-        if (userRepository.findByFirstName(user.getFirstName()).isPresent()) {
-            User user1 = userRepository.findByFirstName(user.getFirstName()).get();
+        if (user.getId() != 0) {
+            User user1 = userRepository.findById(user.getId()).orElse(new User());
             user1.setFirstName(user.getFirstName());
             user1.setLastName(user.getLastName());
             user1.setEmail(user.getEmail());
